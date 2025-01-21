@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,18 +27,10 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollower = new Spark(DriveConstants.LEFT_FOLLOWER_ID);
     rightLeader = new Spark(DriveConstants.RIGHT_LEADER_ID);
     rightFollower = new Spark(DriveConstants.RIGHT_FOLLOWER_ID);
-
+    leftLeader.setInverted(true);
+    
     // set up differential drive class
     drive = new DifferentialDrive(leftLeader, rightLeader);
-
-    // Create the configuration to apply to motors. Voltage compensation
-    // helps the robot perform more similarly on different
-    // battery voltages (at the cost of a little bit of top speed on a fully charged
-    // battery). The current limit helps prevent tripping
-    // breakers.
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.voltageCompensation(12);
-    config.smartCurrentLimit(DriveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
 
     // Set configuration to follow leader and then apply it to corresponding
     // follower. Resetting in case a new controller is swapped

@@ -6,11 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.CoralHandlerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.RollerSubsystem;
 
@@ -27,6 +29,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final RollerSubsystem rollerSubsystem = new RollerSubsystem();
+  private final CoralHandlerSubsystem coralHandlerSubsystem = new CoralHandlerSubsystem();
 
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
@@ -48,7 +51,7 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem));
+    autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem, rollerSubsystem));
   }
 
   /**
@@ -71,6 +74,15 @@ public class RobotContainer {
     operatorController.a()
         .whileTrue(rollerSubsystem.runRoller(rollerSubsystem, () -> RollerConstants.ROLLER_EJECT_VALUE, () -> 0));
 
+    driverController.y()
+        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeToL2Pose()));
+
+    driverController.y()
+        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+
+    driverController.x()
+        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.rest()));
+
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
@@ -78,15 +90,15 @@ public class RobotContainer {
     // value)
     driveSubsystem.setDefaultCommand(
         driveSubsystem.driveArcade(
-            driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX()));
+            driveSubsystem, () -> driverController.getLeftY(), () -> driverController.getRightY()));
 
     // Set the default command for the roller subsystem to the command from the
     // factory with the values provided by the triggers on the operator controller
     rollerSubsystem.setDefaultCommand(
         rollerSubsystem.runRoller(
             rollerSubsystem,
-            () -> operatorController.getRightTriggerAxis(),
-            () -> operatorController.getLeftTriggerAxis()));
+            () -> operatorController.getRightTriggerAxis()/2,
+            () -> operatorController.getLeftTriggerAxis()/2));
   }
 
   /**

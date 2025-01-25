@@ -47,6 +47,6 @@ public class DriveSubsystem extends SubsystemBase {
   public Command driveArcade(
       DriveSubsystem driveSubsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
     return Commands.run(
-        () -> drive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()), driveSubsystem);
+        () -> drive.tankDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()), driveSubsystem);
   }
 }

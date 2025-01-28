@@ -83,6 +83,15 @@ public class RobotContainer {
     driverController.x()
         .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.rest()));
 
+    driverController.x()
+        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+
+    driverController.b()
+        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeToL3Pose()));
+
+    driverController.b()
+        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the

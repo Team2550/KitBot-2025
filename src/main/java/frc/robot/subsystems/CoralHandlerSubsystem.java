@@ -47,7 +47,8 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         Slot0Configs elevatorMotorConfig = new Slot0Configs();
         elevatorMotorConfig.kP = 0.3;
         elevatorMotorConfig.kI = 0; 
-        elevatorMotorConfig.kD = 0.05; 
+        elevatorMotorConfig.kV = 0.1;
+        elevatorMotorConfig.kG = 0.5;
         elevatorMotorConfig.GravityType = GravityTypeValue.Elevator_Static; 
 
         mElevatorMotor = new TalonFX(9);
@@ -103,13 +104,13 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     }
 
     public void rest() {
-        double multiplier = 8;
+        double multiplier = 7.05;
         mElevatorMotor.setControl(mRequest.withPosition(Conversions.metersToRotations(0, 0.13) * multiplier));
         // mElevatorMotor.setPosition(Conversions.metersToRotations(0.15, gearRatio * 4.6809));
     }
     // 50:1 24:1
     public void changeToL2Pose() {
-        double multiplier = 8;
+        double multiplier = 7.05;
         //final PositionVoltage mRequest = new PositionVoltage(0).withSlot(0);
         mElevatorMotor.setControl(mRequest.withPosition(Conversions.metersToRotations(0.3, 0.13) * multiplier));
         // mElevatorMotor.setPosition(Conversions.metersToRotations(0.3, gearRatio * 4.6809));
@@ -118,7 +119,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         mElevatorMotor.set(0);
     }
     public void changeToL3Pose() {
-        int multiplier = 8;
+        double multiplier = 7.05;
         mElevatorMotor.setControl(mRequest.withPosition(Conversions.metersToRotations(0.762, 0.13) * multiplier));
     }
     public void changeToL4Pose() {}

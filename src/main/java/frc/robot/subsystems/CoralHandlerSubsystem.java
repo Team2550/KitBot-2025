@@ -1,28 +1,16 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
-
-import java.lang.reflect.Array;
-import java.net.SocketPermission;
-import java.util.List;
-
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
@@ -37,32 +25,61 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     private NetworkTable mScoringNetworkTable;
     private NetworkTableEntry mSelectedScoringHeightEntry;
     private NetworkTableEntry mSelectedScoringSideEntry;
-    private final PositionVoltage mRequest;
+    private final PositionVoltage mElevatorRequest;
+    private final PositionVoltage mArmRequest;
+    
+
+    private final double multiplier;
         
 
     public CoralHandlerSubsystem() {
+        multiplier = 7.05;
 
-        // CANcoder eventually probably idk their plan
 
+
+        //Set Up Elevator Motor
+        mElevatorMotor = new TalonFX(9);
         Slot0Configs elevatorMotorConfig = new Slot0Configs();
         elevatorMotorConfig.kP = 0.3;
         elevatorMotorConfig.kI = 0; 
         elevatorMotorConfig.kV = 0.1;
         elevatorMotorConfig.kG = 0.5;
         elevatorMotorConfig.GravityType = GravityTypeValue.Elevator_Static; 
-
-        mElevatorMotor = new TalonFX(9);
         mElevatorMotor.getConfigurator().apply(elevatorMotorConfig);
         mElevatorMotor.getConfigurator().apply(new TalonFXConfiguration().CurrentLimits
                     .withStatorCurrentLimit(120)
                     .withSupplyCurrentLimit(40));
         
-        // mArmMotor = new TalonFX(-1);
-        // mArmMotor.getConfigurator().apply(new TalonFXConfiguration().CurrentLimits.withSupplyCurrentLimit(30));
         mElevatorMotor.getConfigurator().apply(new TalonFXConfiguration().MotorOutput.withNeutralMode(NeutralModeValue.Coast).withInverted(InvertedValue.Clockwise_Positive));
         mElevatorMotor.setPosition(0);
         mElevatorMotor.getConfigurator().apply(new TalonFXConfiguration().Feedback.withSensorToMechanismRatio(1));
-        mRequest = new PositionVoltage(0).withSlot(0);
+        mElevatorRequest = new PositionVoltage(0).withSlot(0);
+
+        //Set Up Arm Motor
+        mArmMotor = new TalonFX(9);
+        Slot0Configs armMotorConfig = new Slot0Configs();
+        armMotorConfig.kP = 0.05;
+        armMotorConfig.kI = 0.0; 
+        armMotorConfig.kV = 0.0;
+        armMotorConfig.kG = 0.0;
+        armMotorConfig.GravityType = GravityTypeValue.Arm_Cosine; 
+        mArmMotor.getConfigurator().apply(armMotorConfig);
+        mArmMotor.getConfigurator().apply(new TalonFXConfiguration().CurrentLimits
+                    .withStatorCurrentLimit(120)
+                    .withSupplyCurrentLimit(40));
+        
+        mArmMotor.getConfigurator().apply(new TalonFXConfiguration().MotorOutput.withNeutralMode(NeutralModeValue.Coast).withInverted(InvertedValue.Clockwise_Positive));
+        mArmMotor.setPosition(0);
+        mArmMotor.getConfigurator().apply(new TalonFXConfiguration().Feedback.withSensorToMechanismRatio(1));
+        //Right is 0
+        //Up is 90
+        //Left is 180
+        //Down is 270
+        mArmRequest = new PositionVoltage(90).withSlot(0);
+
+
+
+
 
         mNetworkTable = NetworkTableInstance.getDefault();
         mScoringNetworkTable = mNetworkTable.getTable("automaticScoringPosition");
@@ -73,6 +90,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     public Command intake() {
         return null;
     }
+
     public Command expel() {
         Runnable selectedHeightCommand = () -> {};
         int scoringPosition = (int)mSelectedScoringHeightEntry.getInteger(-1);
@@ -104,23 +122,17 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     }
 
     public void rest() {
-        double multiplier = 7.05;
-        mElevatorMotor.setControl(mRequest.withPosition(Conversions.metersToRotations(0, 0.13) * multiplier));
-        // mElevatorMotor.setPosition(Conversions.metersToRotations(0.15, gearRatio * 4.6809));
+        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(0, 0.13) * multiplier));
     }
     // 50:1 24:1
     public void changeToL2Pose() {
-        double multiplier = 7.05;
-        //final PositionVoltage mRequest = new PositionVoltage(0).withSlot(0);
-        mElevatorMotor.setControl(mRequest.withPosition(Conversions.metersToRotations(0.3, 0.13) * multiplier));
-        // mElevatorMotor.setPosition(Conversions.metersToRotations(0.3, gearRatio * 4.6809));
+        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(0.3, 0.13) * multiplier));
     }
     public void stopElevatorMotor() {
         mElevatorMotor.set(0);
     }
     public void changeToL3Pose() {
-        double multiplier = 7.05;
-        mElevatorMotor.setControl(mRequest.withPosition(Conversions.metersToRotations(0.762, 0.13) * multiplier));
+        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(0.762, 0.13) * multiplier));
     }
     public void changeToL4Pose() {}
 }

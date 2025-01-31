@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -24,6 +26,16 @@ public final class Constants {
     public static final int RIGHT_FOLLOWER_ID = 2;
 
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 60;
+  }
+
+  public static final class CoralHandlerConstants {
+    public static final double restPose = 0;
+    public static final double L2Pose = 0.3;
+    public static final double L3Pose = 0.762;
+    public static final double L4Pose = 0;  // Set this
+
+    public static final Rotation2d armRestPose = new Rotation2d(0);
+    public static final Rotation2d R2Pose = new Rotation2d(30);
   }
 
   public static final class RollerConstants {

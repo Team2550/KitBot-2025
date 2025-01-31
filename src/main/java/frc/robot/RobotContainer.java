@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.CoralHandlerConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.commands.Autos;
@@ -74,23 +75,24 @@ public class RobotContainer {
     operatorController.a()
         .whileTrue(rollerSubsystem.runRoller(rollerSubsystem, () -> RollerConstants.ROLLER_EJECT_VALUE, () -> 0));
 
-    driverController.y()
-        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeToL2Pose()));
+    // Elevator bindings:
+    // driverController.y()
+    //     .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeToPose(CoralHandlerConstants.L2Pose)));
 
-    driverController.y()
-        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+    // driverController.y()
+    //     .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
 
-    driverController.x()
-        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.rest()));
+    // driverController.x()
+    //     .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.rest()));
 
-    driverController.x()
-        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
-
-    driverController.b()
-        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeToL3Pose()));
+    // driverController.x()
+    //     .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
 
     driverController.b()
-        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+        .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeArmPose(CoralHandlerConstants.R2Pose)));
+
+    driverController.b()
+        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopArmMotor()));
 
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver

@@ -8,13 +8,14 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
-import frc.robot.Constants;
+import frc.robot.Constants.CoralHandlerConstants;
 
 public class CoralHandlerSubsystem extends SubsystemBase {
     
@@ -55,8 +56,10 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         mElevatorMotor.getConfigurator().apply(new TalonFXConfiguration().Feedback.withSensorToMechanismRatio(1));
         mElevatorRequest = new PositionVoltage(0).withSlot(0);
 
+
+
         //Set Up Arm Motor
-        mArmMotor = new TalonFX(9);
+        mArmMotor = new TalonFX(10);
         Slot0Configs armMotorConfig = new Slot0Configs();
         armMotorConfig.kP = 0.05;
         armMotorConfig.kI = 0.0; 
@@ -97,15 +100,15 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         switch (scoringPosition) {
             case 0:
             case 1:
-                selectedHeightCommand = () -> changeToL2Pose();
+                selectedHeightCommand = () -> changeToPose(CoralHandlerConstants.L2Pose);
                 break;
             case 2:
             case 3:
-                selectedHeightCommand = () -> changeToL3Pose();
+                selectedHeightCommand = () -> changeToPose(CoralHandlerConstants.L3Pose);
                 break;
             case 4:
             case 5:
-                selectedHeightCommand = () -> changeToL4Pose();
+                selectedHeightCommand = () -> changeToPose(CoralHandlerConstants.L4Pose);
                 break;
             default:
                 break;
@@ -117,22 +120,32 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     public Command zero() { return null; }
 
     //TODO: Probably come up with better naming to not confuse with the Swerve system and Pose2D's
-    public void changeToPickupPose() {
+    public void changeToPickupPose() {}
 
+    public void changeToPose(double pose) {
+        if (0 <= pose && pose <= 0.762) {
+            mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(pose, 0.13) * multiplier));
+        } else {
+            return;
+        }
     }
-
     public void rest() {
-        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(0, 0.13) * multiplier));
-    }
-    // 50:1 24:1
-    public void changeToL2Pose() {
-        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(0.3, 0.13) * multiplier));
+        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(CoralHandlerConstants.restPose, 0.13) * multiplier));
     }
     public void stopElevatorMotor() {
         mElevatorMotor.set(0);
     }
-    public void changeToL3Pose() {
-        mElevatorMotor.setControl(mElevatorRequest.withPosition(Conversions.metersToRotations(0.762, 0.13) * multiplier));
+
+    public void stopArmMotor(){
+        mArmMotor.set(0);
     }
-    public void changeToL4Pose() {}
+
+    public void changeArmPose(Rotation2d pose) {
+        mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
+        /*if (-180 <= pose.getDegrees() && pose.getDegrees() <= 180) {
+            mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
+        } else {
+            return;
+        }*/
+    }
 }

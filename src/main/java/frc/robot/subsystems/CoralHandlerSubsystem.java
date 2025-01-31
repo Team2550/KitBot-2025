@@ -41,7 +41,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         //Set Up Elevator Motor
         mElevatorMotor = new TalonFX(9);
         Slot0Configs elevatorMotorConfig = new Slot0Configs();
-        elevatorMotorConfig.kP = 0.3;
+        elevatorMotorConfig.kP = 0.5;
         elevatorMotorConfig.kI = 0; 
         elevatorMotorConfig.kV = 0.1;
         elevatorMotorConfig.kG = 0.5;
@@ -61,10 +61,10 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         //Set Up Arm Motor
         mArmMotor = new TalonFX(10);
         Slot0Configs armMotorConfig = new Slot0Configs();
-        armMotorConfig.kP = 0.05;
+        armMotorConfig.kP = 0.3;
         armMotorConfig.kI = 0.0; 
         armMotorConfig.kV = 0.0;
-        armMotorConfig.kG = 0.0;
+        armMotorConfig.kG = 0.5;
         armMotorConfig.GravityType = GravityTypeValue.Arm_Cosine; 
         mArmMotor.getConfigurator().apply(armMotorConfig);
         mArmMotor.getConfigurator().apply(new TalonFXConfiguration().CurrentLimits
@@ -72,7 +72,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
                     .withSupplyCurrentLimit(40));
         
         mArmMotor.getConfigurator().apply(new TalonFXConfiguration().MotorOutput.withNeutralMode(NeutralModeValue.Coast).withInverted(InvertedValue.Clockwise_Positive));
-        mArmMotor.setPosition(0);
+        mArmMotor.setPosition(-0.25);
         mArmMotor.getConfigurator().apply(new TalonFXConfiguration().Feedback.withSensorToMechanismRatio(1));
         //Right is 0
         //Up is 90

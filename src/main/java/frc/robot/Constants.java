@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.lib.math.Conversions;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -34,8 +35,8 @@ public final class Constants {
     public static final double L3Pose = 0.762;
     public static final double L4Pose = 0;  // Set this
 
-    public static final Rotation2d armRestPose = new Rotation2d(0);
-    public static final Rotation2d R2Pose = new Rotation2d(30);
+    public static final Rotation2d armRestPose = new Rotation2d(0*Math.PI/180);
+    public static final Rotation2d R2Pose = new Rotation2d(90*Math.PI/180);
   }
 
   public static final class RollerConstants {

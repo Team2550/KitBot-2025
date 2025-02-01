@@ -142,10 +142,10 @@ public class CoralHandlerSubsystem extends SubsystemBase {
 
     public void changeArmPose(Rotation2d pose) {
         mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
-        /*if (-180 <= pose.getDegrees() && pose.getDegrees() <= 180) {
+        if (-180 <= pose.getDegrees() && pose.getDegrees() <= 180) {
             mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
         } else {
             return;
-        }*/
+        }
     }
 }

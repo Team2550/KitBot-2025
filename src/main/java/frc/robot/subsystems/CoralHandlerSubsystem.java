@@ -44,7 +44,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         elevatorMotorConfig.kP = 0.5;
         elevatorMotorConfig.kI = 0; 
         elevatorMotorConfig.kV = 0.1;
-        elevatorMotorConfig.kG = 0.5;
+        elevatorMotorConfig.kG = 0.75;
         elevatorMotorConfig.GravityType = GravityTypeValue.Elevator_Static; 
         mElevatorMotor.getConfigurator().apply(elevatorMotorConfig);
         mElevatorMotor.getConfigurator().apply(new TalonFXConfiguration().CurrentLimits
@@ -61,10 +61,10 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         //Set Up Arm Motor
         mArmMotor = new TalonFX(10);
         Slot0Configs armMotorConfig = new Slot0Configs();
-        armMotorConfig.kP = 0.3;
+        armMotorConfig.kP = 0.4;
         armMotorConfig.kI = 0.0; 
         armMotorConfig.kV = 0.0;
-        armMotorConfig.kG = 0.5;
+        armMotorConfig.kG = 0.75;
         armMotorConfig.GravityType = GravityTypeValue.Arm_Cosine; 
         mArmMotor.getConfigurator().apply(armMotorConfig);
         mArmMotor.getConfigurator().apply(new TalonFXConfiguration().CurrentLimits
@@ -73,7 +73,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         
         mArmMotor.getConfigurator().apply(new TalonFXConfiguration().MotorOutput.withNeutralMode(NeutralModeValue.Coast).withInverted(InvertedValue.Clockwise_Positive));
         mArmMotor.setPosition(-0.25);
-        mArmMotor.getConfigurator().apply(new TalonFXConfiguration().Feedback.withSensorToMechanismRatio(1));
+        mArmMotor.getConfigurator().apply(new TalonFXConfiguration().Feedback.withSensorToMechanismRatio(62.5));
         //Right is 0
         //Up is 90
         //Left is 180
@@ -141,9 +141,9 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     }
 
     public void changeArmPose(Rotation2d pose) {
-        mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
+        //mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
         if (-180 <= pose.getDegrees() && pose.getDegrees() <= 180) {
-            mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees() * 62.5) / 360));
+            mArmMotor.setControl(mArmRequest.withPosition((pose.getDegrees()) / 360));
         } else {
             return;
         }

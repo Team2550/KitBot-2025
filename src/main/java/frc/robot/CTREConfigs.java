@@ -18,7 +18,7 @@ public final class CTREConfigs {
 
         elevatorMotorFXConfig.CurrentLimits.StatorCurrentLimit = 120;
         elevatorMotorFXConfig.CurrentLimits.SupplyCurrentLimit = 40;
-        elevatorMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        elevatorMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         elevatorMotorFXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         elevatorMotorFXConfig.Feedback.SensorToMechanismRatio = 1;
 

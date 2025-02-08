@@ -13,7 +13,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.math.Conversions;
@@ -21,13 +24,26 @@ import frc.robot.Robot;
 import frc.robot.Constants.CoralHandlerConstants;
 
 enum CoralHandlerPoints {
-    L1(1,1);
+    REST(0,0),
+    PICKUP(0,0),
+    L1(0,0),
+    L2(0,0),
+    L3(0,0),
+    L4(0,0);
 
     private double height;
     private double angle;
     CoralHandlerPoints(double height, double angle) {
         this.height = height;
         this.angle = angle;
+    }
+
+    public double getHeight() {
+        return this.height;
+    }
+
+    public double getAngle() {
+        return this.angle;
     }
 }
 
@@ -42,6 +58,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
     private NetworkTableEntry mSelectedScoringSideEntry;
     private final PositionVoltage mElevatorRequest;
     private final PositionVoltage mArmRequest;
+    private final Solenoid mCoralHolderSolenoid;
     
 
     private static final double multiplier = 7.07;
@@ -68,6 +85,8 @@ public class CoralHandlerSubsystem extends SubsystemBase {
         //Left is 180
         //Down is 270
         mArmRequest = new PositionVoltage(90).withSlot(0);
+
+        mCoralHolderSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
 
         mNetworkTable = NetworkTableInstance.getDefault();
         mScoringNetworkTable = mNetworkTable.getTable("automaticScoringPosition");
@@ -99,7 +118,7 @@ public class CoralHandlerSubsystem extends SubsystemBase {
                 break;
         }
         //TODO: Check if doing automatic scoring and obtain scoring position if so
-        return this.run(selectedHeightCommand);
+        return this.run(selectedHeightCommand).andThen(new InstantCommand(() -> mCoralHolderSolenoid.set(true)));
     }
 
     public Command zero() { return null; }

@@ -78,17 +78,17 @@ public class RobotContainer {
         .whileTrue(rollerSubsystem.runRoller(rollerSubsystem, () -> RollerConstants.ROLLER_EJECT_VALUE, () -> 0));
 
     // Elevator bindings:
-    // driverController.y()
-    //     .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.changeToPose(CoralHandlerConstants.L2Pose)));
+    driverController.y()
+        .whileTrue(coralHandlerSubsystem.moveElevatorTo(CoralHandlerConstants.L2Pose));
 
-    // driverController.y()
-    //     .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+    driverController.y()
+        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
 
-    // driverController.x()
-    //     .whileTrue(new InstantCommand(() -> coralHandlerSubsystem.rest()));
+    driverController.x()
+        .whileTrue(coralHandlerSubsystem.rest());
 
-    // driverController.x()
-    //     .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
+    driverController.x()
+        .onFalse(new InstantCommand(() -> coralHandlerSubsystem.stopElevatorMotor()));
 
     driverController.b()
         .whileTrue(coralHandlerSubsystem.changeArmPose(CoralHandlerConstants.R2Pose));

@@ -35,8 +35,8 @@ public final class Constants {
     public static final double L3Pose = 0.762;
     public static final double L4Pose = 0;  // Set this
 
-    public static final Rotation2d armRestPose = new Rotation2d(0*Math.PI/180);
-    public static final Rotation2d R2Pose = new Rotation2d(90*Math.PI/180);
+    public static final Rotation2d armRestPose = new Rotation2d(-90*Math.PI/180);
+    public static final Rotation2d R2Pose = new Rotation2d(-45*Math.PI/180);
   }
 
   public static final class RollerConstants {

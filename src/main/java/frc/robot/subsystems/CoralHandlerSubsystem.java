@@ -149,18 +149,4 @@ public class CoralHandlerSubsystem extends SubsystemBase {
             return null;
         }
     }
-
-    private SysIdRoutine mArmSysIdRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                (Voltage volts) -> mArmMotor.setVoltage(volts.in(edu.wpi.first.units.Units.Volts)), null, this));
-
-    public Command runArmQuasiTest(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction direction) {
-        return mArmSysIdRoutine.quasistatic(direction);
-    }
-
-    public Command runArmDynamTest(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction direction) {
-        return mArmSysIdRoutine.dynamic(direction);
-    }
 }
